@@ -2,41 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* CodeMentor AI Design System - Modern Developer Learning Platform */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Brand Colors */
+    --background: 220 25% 6%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 25% 8%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 25% 8%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Deep Blue/Purple Tech */
+    --primary: 245 65% 60%;
+    --primary-foreground: 220 25% 6%;
+    
+    /* Secondary - Success Green */
+    --secondary: 142 71% 45%;
+    --secondary-foreground: 220 25% 6%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Muted - Subtle Grays */
+    --muted: 220 20% 15%;
+    --muted-foreground: 220 15% 65%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - Orange for Practice/Warnings */
+    --accent: 25 95% 53%;
+    --accent-foreground: 220 25% 6%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Code Editor Colors */
+    --editor-bg: 220 25% 4%;
+    --editor-line-bg: 220 20% 8%;
+    --editor-border: 220 20% 20%;
+    
+    /* Syntax Highlighting */
+    --syntax-keyword: 270 100% 80%;
+    --syntax-string: 120 50% 70%;
+    --syntax-number: 30 80% 70%;
+    --syntax-comment: 220 15% 50%;
+    --syntax-function: 200 80% 70%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 20% 20%;
+    --input: 220 20% 15%;
+    --ring: 245 65% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(245 65% 60%), hsl(270 80% 70%));
+    --gradient-success: linear-gradient(135deg, hsl(142 71% 45%), hsl(120 60% 50%));
+    --gradient-accent: linear-gradient(135deg, hsl(25 95% 53%), hsl(45 90% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(245 65% 60%) 0%, hsl(270 80% 70%) 50%, hsl(200 80% 70%) 100%);
+    
+    /* Shadows & Effects */
+    --shadow-glow: 0 0 30px hsl(245 65% 60% / 0.3);
+    --shadow-code: 0 4px 20px hsl(220 25% 3% / 0.8);
+    --shadow-card: 0 8px 32px hsl(220 25% 3% / 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -54,44 +84,6 @@ All colors MUST be HSL.
 
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
 }
 
 @layer base {
@@ -100,6 +92,67 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  /* Hero Elements */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .glow-effect {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  /* Code Editor Styles */
+  .code-editor {
+    background: hsl(var(--editor-bg));
+    border: 1px solid hsl(var(--editor-border));
+    box-shadow: var(--shadow-code);
+  }
+  
+  .code-line {
+    background: hsl(var(--editor-line-bg));
+    transition: var(--transition-smooth);
+  }
+  
+  .code-line:hover {
+    background: hsl(var(--muted));
+  }
+  
+  /* Syntax Highlighting */
+  .syntax-keyword { color: hsl(var(--syntax-keyword)); }
+  .syntax-string { color: hsl(var(--syntax-string)); }
+  .syntax-number { color: hsl(var(--syntax-number)); }
+  .syntax-comment { color: hsl(var(--syntax-comment)); }
+  .syntax-function { color: hsl(var(--syntax-function)); }
+  
+  /* Interactive Elements */
+  .glass-card {
+    background: hsl(var(--card) / 0.8);
+    border: 1px solid hsl(var(--border) / 0.5);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .hover-lift {
+    transition: var(--transition-smooth);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card);
+  }
+  
+  /* Progress & Gamification */
+  .progress-glow {
+    box-shadow: 0 0 20px hsl(var(--secondary) / 0.5);
+  }
+  
+  .streak-fire {
+    background: var(--gradient-accent);
+    animation: pulse 2s ease-in-out infinite alternate;
   }
 }
