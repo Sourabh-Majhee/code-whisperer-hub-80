@@ -1,12 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Code, Brain, Trophy, User, LogIn } from "lucide-react";
+import { Menu, X, Code, Brain, Trophy, User, LogIn, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useToast } from "@/hooks/use-toast";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "Successfully signed out.",
+      });
+    }
+  };
 
   return (
     <nav className="fixed top-0 w-full z-50 glass-card border-b">
@@ -45,24 +79,45 @@ export function Navbar() {
               <Trophy className="w-4 h-4" />
               <span>Hackathons</span>
             </Link>
-            <Link 
-              to="/dashboard" 
-              className="text-muted-foreground hover:text-foreground transition-colors flex items-center space-x-1"
-            >
-              <User className="w-4 h-4" />
-              <span>Dashboard</span>
-            </Link>
+            {user && (
+              <Link 
+                to="/dashboard" 
+                className="text-muted-foreground hover:text-foreground transition-colors flex items-center space-x-1"
+              >
+                <User className="w-4 h-4" />
+                <span>Dashboard</span>
+              </Link>
+            )}
           </div>
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <LogIn className="w-4 h-4 mr-2" />
-              Login
-            </Button>
-            <Button variant="hero" size="sm">
-              Sign Up
-            </Button>
+            {user ? (
+              <>
+                {!window.location.pathname.includes('/dashboard') && (
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/dashboard">
+                      <User className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => setShowAuthModal(true)}>
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+                <Button variant="hero" size="sm" onClick={() => setShowAuthModal(true)}>
+                  Sign Up
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -101,27 +156,40 @@ export function Navbar() {
                 <Trophy className="w-4 h-4" />
                 <span>Hackathons</span>
               </Link>
-              <Link 
-                to="/dashboard" 
-                className="text-muted-foreground hover:text-foreground transition-colors flex items-center space-x-2 p-2 rounded-md hover:bg-muted"
-                onClick={() => setIsOpen(false)}
-              >
-                <User className="w-4 h-4" />
-                <span>Dashboard</span>
-              </Link>
+              {user && (
+                <Link 
+                  to="/dashboard" 
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center space-x-2 p-2 rounded-md hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <User className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </Link>
+              )}
               <div className="flex flex-col space-y-2 pt-3 border-t border-border">
-                <Button variant="ghost" size="sm" className="justify-start">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Login
-                </Button>
-                <Button variant="hero" size="sm">
-                  Sign Up
-                </Button>
+                {user ? (
+                  <Button variant="outline" size="sm" onClick={handleSignOut} className="justify-start">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="ghost" size="sm" className="justify-start" onClick={() => setShowAuthModal(true)}>
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Login
+                    </Button>
+                    <Button variant="hero" size="sm" onClick={() => setShowAuthModal(true)}>
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         )}
       </div>
+      
+      <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
     </nav>
   );
 }

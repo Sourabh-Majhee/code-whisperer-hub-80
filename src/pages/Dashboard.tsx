@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +19,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const stats = [
   { label: "Lines Explained", value: "2,847", icon: Brain, color: "text-primary" },
@@ -73,6 +75,36 @@ const upcomingEvents = [
 ];
 
 export default function Dashboard() {
+  const [user, setUser] = useState<any>(null);
+  const [progress, setProgress] = useState<any>({});
+  const [profile, setProfile] = useState<any>({});
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    
+    if (user) {
+      const [progressRes, profileRes] = await Promise.all([
+        supabase.from('user_progress').select('*').eq('user_id', user.id).single(),
+        supabase.from('profiles').select('*').eq('id', user.id).single()
+      ]);
+      
+      setProgress(progressRes.data || {});
+      setProfile(profileRes.data || {});
+    }
+  };
+
+  const stats = [
+    { label: "Lines Explained", value: progress.lines_explained || 0, icon: Brain, color: "text-primary" },
+    { label: "Problems Solved", value: progress.problems_solved || 0, icon: Target, color: "text-secondary" },
+    { label: "Hackathons Won", value: progress.hackathons_won || 0, icon: Trophy, color: "text-accent" },
+    { label: "Current Streak", value: `${progress.current_streak || 0} days`, icon: Flame, color: "text-orange-500" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -80,7 +112,7 @@ export default function Dashboard() {
       <div className="pt-16 p-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, Alex! 👋</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {profile.name || 'User'}! 👋</h1>
           <p className="text-muted-foreground">Track your progress and continue your coding journey</p>
         </div>
 
