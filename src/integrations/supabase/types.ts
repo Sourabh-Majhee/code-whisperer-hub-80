@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      hackathons: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          end_date: string
+          id: string
+          max_participants: number | null
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          end_date: string
+          id?: string
+          max_participants?: number | null
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          max_participants?: number | null
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      practice_problems: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty: string
+          id: string
+          language: string
+          solution: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          difficulty: string
+          id?: string
+          language: string
+          solution?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty?: string
+          id?: string
+          language?: string
+          solution?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          preferred_languages: string[] | null
+          skill_level: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          preferred_languages?: string[] | null
+          skill_level?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          preferred_languages?: string[] | null
+          skill_level?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          concepts_mastered: number
+          created_at: string
+          id: string
+          lines_of_code: number
+          problems_solved: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          concepts_mastered?: number
+          created_at?: string
+          id?: string
+          lines_of_code?: number
+          problems_solved?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          concepts_mastered?: number
+          created_at?: string
+          id?: string
+          lines_of_code?: number
+          problems_solved?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
